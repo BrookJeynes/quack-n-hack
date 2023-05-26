@@ -1,1 +1,1 @@
-# Terminal Froggy
+# Quack 'n Hack: Unix for Kids
