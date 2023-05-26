@@ -10,6 +10,8 @@ permissions: write-all
 
 env:
   CARGO_TERM_COLOR: always
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
   fmt:
@@ -46,9 +48,9 @@ jobs:
       - name: Run tests
         run: cargo test
 
-  build:
+  build-and-preview-deploy:
     runs-on: ubuntu-latest
-    name: Build and Push
+    name: Build and Preview Deploy
     needs: [test]
     steps:
       - name: git-checkout
@@ -62,12 +64,12 @@ jobs:
           cargo build --verbose
           rustup target add wasm32-unknown-unknown
           trunk build
-    
-      - name: Push
-        uses: s0/git-publish-subdir-action@develop
-        env:
-          REPO: self
-          BRANCH: build # Build branch
-          FOLDER: dist # Build directory
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          MESSAGE: "Build: ({sha}) {msg}"
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} 

@@ -12,6 +12,27 @@ jobs:
   Deploy-Production:
     runs-on: ubuntu-latest
     steps:
+      - name: git-checkout
+        uses: actions/checkout@v3
+
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+      - uses: jetli/trunk-action@v0.4.0
+      - name: Build
+        run: |
+          cargo build --verbose
+          rustup target add wasm32-unknown-unknown
+          trunk build
+
+      - name: Push to build branch
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: build # Build branch
+          FOLDER: dist # Build directory
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MESSAGE: "Build: ({sha}) {msg}"
+
       - uses: actions/checkout@v3
         with:
           ref: 'build'
@@ -23,3 +44,4 @@ jobs:
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
       - name: Deploy Project Artifacts to Vercel
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
