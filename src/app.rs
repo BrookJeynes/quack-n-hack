@@ -12,6 +12,7 @@ pub fn App(cx: Scope) -> impl IntoView {
         cx,
         <Stylesheet id="leptos" href="/pkg/tailwind.css"/>
         <Link rel="shortcut icon" type_="image/ico" href="/favicon.ico"/>
+        <Script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" />
         <Header />
         <Router>
             <Routes>
