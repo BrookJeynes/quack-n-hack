@@ -24,7 +24,6 @@ jobs:
           rustup target add wasm32-unknown-unknown
           trunk build
 
-      - uses: actions/checkout@v3
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
       - name: Pull Vercel Environment Information
