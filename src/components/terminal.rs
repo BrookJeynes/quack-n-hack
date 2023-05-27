@@ -2,6 +2,9 @@ use crate::types::terminal_content::TerminalContent;
 use leptos::{ev::SubmitEvent, html::Input, *};
 use std::time::Duration;
 
+// TODO - Tech Debt: Find a way to not allow the whole 
+// component but rather the single closure
+#[allow(clippy::redundant_closure)]
 #[component]
 pub fn Terminal<F>(
     cx: Scope,
@@ -80,6 +83,7 @@ where
                                 class="outline-none bg-transparent"
                                 type="text"
                                 node_ref=terminal_input_ref
+                                // Closure not redundant - required for state updates
                                 disabled=move || disable_input()
                                 autofocus
                             />
