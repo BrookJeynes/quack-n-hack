@@ -29,7 +29,7 @@ pub fn Home(cx: Scope) -> impl IntoView {
         complete();
         let _ = js_sys::eval(
             "window.confetti({
-                    particleCount: 200,
+                    particleCount: 650,
                     spread: 100,
                     origin: { y: 0.6 }
                 });",
