@@ -17,7 +17,7 @@ module.exports = {
             },
             maxWidth: {
                 "header": "1920px",
-                "content": "1080px",
+                "content": "1280px",
             },
             keyframes: {
                 shake: {

@@ -2,7 +2,7 @@ use crate::{html::AnyElement, view, HtmlElement, IntoView, Scope};
 
 #[derive(Clone)]
 pub struct TerminalContent {
-    pub progress: usize,
+    progress: usize,
     pub title: String,
     pub answers: Vec<(String, HtmlElement<AnyElement>)>,
 }
@@ -47,6 +47,6 @@ impl TerminalContent {
     }
 
     pub fn check_finished(&self) -> bool {
-        self.progress == self.answers.len()
+        self.progress == self.answers.len() - 1
     }
 }

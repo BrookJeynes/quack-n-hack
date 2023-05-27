@@ -5,10 +5,10 @@ use std::time::Duration;
 #[component]
 pub fn Terminal<F>(
     cx: Scope,
-    // TODO - Tech Debt: Find a way to pass terminal in as mut
     terminal: TerminalContent,
     /// Callback used to signal when the terminal instance is completed
     complete_callback: F,
+    #[prop(optional)] class: String,
 ) -> impl IntoView
 where
     F: Fn(bool) + 'static,
@@ -33,22 +33,18 @@ where
 
         match terminal.check_answer(input.trim()) {
             Ok(output) => {
-                let mut new_content = terminal_content();
-                new_content.push(output);
-                set_terminal_content.set(new_content);
+                set_terminal_content.update(|content| content.push(output));
 
-                terminal.next();
+                if terminal.next().is_none() {
+                    set_disable_input(true);
+                    complete_callback(true);
+                }
             }
             Err(_) => {
                 if !show_error() {
                     set_show_error(true);
                 }
             }
-        }
-
-        if terminal.check_finished() {
-            set_disable_input(true);
-            complete_callback(true);
         }
 
         terminal_input_ref()
@@ -64,7 +60,7 @@ where
     });
 
     // Classes
-    let body_styling = "bg-terminal-dark-blue text-white border-2 border-pastel-purple h-96 overflow-scroll animate-wiggle";
+    let body_styling = format!("bg-terminal-dark-blue text-white border-2 border-pastel-purple h-[30rem] overflow-scroll {}", class);
 
     view! {
         cx,
@@ -72,7 +68,7 @@ where
             class=move || if show_error() {format!("{} animate-shake", body_styling)} else {body_styling.to_string()}
             on:click=move |_| terminal_input_ref().expect("<input> to exist").focus().expect("<input> to exist")
         >
-            <div class="mx-auto px-5 py-5">
+            <div class="mx-auto p-5">
                 <form on:submit=on_submit>
                     <p>{title}</p>
 
@@ -84,7 +80,7 @@ where
                                 class="outline-none bg-transparent"
                                 type="text"
                                 node_ref=terminal_input_ref
-                                disabled=disable_input()
+                                disabled=move || disable_input()
                                 autofocus
                             />
                     </p>
