@@ -50,6 +50,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Preview Deploy
     needs: [test]
+    permissions:
+      pull-requests: write
     steps:
       - name: git-checkout
         uses: actions/checkout@v3
