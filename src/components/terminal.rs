@@ -2,15 +2,13 @@ use crate::types::level::Level;
 use leptos::{ev::SubmitEvent, html::Input, *};
 use std::time::Duration;
 
-// TODO - Tech Debt: Find a way to not allow the whole
-// component but rather the single closure
+// Leptos makes great use of "redundant closures" to update state.
 #[allow(clippy::redundant_closure)]
 #[component]
 pub fn Terminal<F>(
     cx: Scope,
     terminal: Level,
-    /// Callback used to signal when the terminal instance is completed
-    complete_callback: F,
+    complete_level_callback: F,
     #[prop(optional)] class: String,
 ) -> impl IntoView
 where
@@ -40,7 +38,7 @@ where
 
                 if terminal.content.next().is_none() {
                     set_disable_input(true);
-                    complete_callback(true);
+                    complete_level_callback(true);
                 }
             }
             Err(_) => {

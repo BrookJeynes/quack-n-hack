@@ -37,7 +37,7 @@ pub fn Home(cx: Scope) -> impl IntoView {
         if complete() {
             let _ = js_sys::eval(
                 "window.confetti({
-                    particleCount: 650,
+                    particleCount: 500,
                     spread: 100,
                     origin: { y: 0.6 }
                 });",
@@ -56,12 +56,18 @@ pub fn Home(cx: Scope) -> impl IntoView {
                 >
                     {move || terminal().instructions}
                 </InstructionsPanel>
+
+                // This currently re-renders the whole component each time
+                // the terminal changes, not ideal.
+                //
+                // TODO - Tech Debt: Find a way to only re-render what's
+                // needed
                 {move ||
                     view! {cx,
                         <Terminal
                             class=String::from("w-full md:w-2/3")
                             terminal=terminal()
-                            complete_callback={set_complete}
+                            complete_level_callback={set_complete}
                         />
                     }}
             </div>
