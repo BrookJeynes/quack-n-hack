@@ -1,4 +1,4 @@
-use crate::types::terminal_content::TerminalContent;
+use crate::types::level::Level;
 use leptos::{ev::SubmitEvent, html::Input, *};
 use std::time::Duration;
 
@@ -8,7 +8,7 @@ use std::time::Duration;
 #[component]
 pub fn Terminal<F>(
     cx: Scope,
-    terminal: TerminalContent,
+    terminal: Signal<Level>,
     /// Callback used to signal when the terminal instance is completed
     complete_callback: F,
     #[prop(optional)] class: String,
@@ -17,8 +17,7 @@ where
     F: Fn(bool) + 'static,
 {
     // Variables
-    let mut terminal = terminal;
-    let title = terminal.create_title(cx);
+    let title = move || terminal().content.create_title(cx);
 
     // References
     let terminal_input_ref: NodeRef<Input> = create_node_ref(cx);
@@ -34,11 +33,11 @@ where
 
         let input = terminal_input_ref().expect("<input> to exist").value();
 
-        match terminal.check_answer(input.trim()) {
+        match terminal().content.check_answer(input.trim()) {
             Ok(output) => {
                 set_terminal_content.update(|content| content.push(output));
 
-                if terminal.next().is_none() {
+                if terminal().content.next().is_none() {
                     set_disable_input(true);
                     complete_callback(true);
                 }
@@ -75,7 +74,7 @@ where
                 <form on:submit=on_submit>
                     <p>{title}</p>
 
-                    {terminal_content}
+                    {move || terminal_content}
 
                     <p>
                         "[root@"<span class="text-pastel-blue">"quack"</span>" ~]$ "
@@ -83,7 +82,6 @@ where
                                 class="outline-none bg-transparent"
                                 type="text"
                                 node_ref=terminal_input_ref
-                                // Closure not redundant - required for state updates
                                 disabled=move || disable_input()
                                 autofocus
                             />
