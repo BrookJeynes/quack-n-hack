@@ -56,11 +56,14 @@ pub fn Home(cx: Scope) -> impl IntoView {
                 >
                     {move || terminal().instructions}
                 </InstructionsPanel>
-                <Terminal
-                    class=String::from("w-full md:w-2/3")
-                    terminal={terminal}
-                    complete_callback={set_complete}
-                />
+                {move ||
+                    view! {cx,
+                        <Terminal
+                            class=String::from("w-full md:w-2/3")
+                            terminal=terminal()
+                            complete_callback={set_complete}
+                        />
+                    }}
             </div>
         </PageWrapper>
     }

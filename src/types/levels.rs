@@ -74,9 +74,14 @@ impl Levels {
                                     </div>
                                 </div>
                             }.into_any()),
-                            (String::from("cat"), view! {cx, 
+                            (String::from("cat Quacky.duck"), view! {cx, 
                                 <div>
-                                    <p><span class="text-pastel-blue">"❯ "</span>"cat"</p>
+                                    <p><span class="text-pastel-blue">"❯ "</span>"cat "<span class="text-pastel-yellow">"Quacky.duck"</span></p>
+                                    <pre class="text-pastel-yellow">r#"
+                                             _
+                                          __(.)<
+                                      ... \___)
+                                    "#</pre>
                                 </div>
                             }.into_any()),
                         ]
@@ -94,9 +99,6 @@ impl Levels {
     }
 
     pub fn get_level(&self, level: usize) -> Option<Level> {
-        match self.levels.get(level) {
-            Some(content) => Some(content.clone()),
-            None => None,
-        }
+        self.levels.get(level).cloned()
     }
 }

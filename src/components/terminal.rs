@@ -8,7 +8,7 @@ use std::time::Duration;
 #[component]
 pub fn Terminal<F>(
     cx: Scope,
-    terminal: Signal<Level>,
+    terminal: Level,
     /// Callback used to signal when the terminal instance is completed
     complete_callback: F,
     #[prop(optional)] class: String,
@@ -17,7 +17,8 @@ where
     F: Fn(bool) + 'static,
 {
     // Variables
-    let title = move || terminal().content.create_title(cx);
+    let mut terminal = terminal;
+    let title = terminal.content.create_title(cx);
 
     // References
     let terminal_input_ref: NodeRef<Input> = create_node_ref(cx);
@@ -33,11 +34,11 @@ where
 
         let input = terminal_input_ref().expect("<input> to exist").value();
 
-        match terminal().content.check_answer(input.trim()) {
+        match terminal.content.check_answer(input.trim()) {
             Ok(output) => {
                 set_terminal_content.update(|content| content.push(output));
 
-                if terminal().content.next().is_none() {
+                if terminal.content.next().is_none() {
                     set_disable_input(true);
                     complete_callback(true);
                 }
