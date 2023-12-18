@@ -1,0 +1,6 @@
+Quack 'n Hack: UNIX for Kids
+--------------------------
+
+A proof of concept for running Rust Webasm with Leptos.
+
+A simple application designed to teach a younger audience about the UNIX terminal.
